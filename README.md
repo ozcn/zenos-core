@@ -1,1 +1,1 @@
-# zenon-slack
+# zenos-slack
