@@ -12,7 +12,7 @@ var _slack = function(core, conf) {
           text: msg
         }
       ]
-    }
+    };
   };
   var userEntryExpr = new RegExp('<@(U[0-9A-Z]+)\\|([a-z]+)>', 'g');
   var getUserIDFromTokenizedEntry = function(entry) {
@@ -24,17 +24,17 @@ var _slack = function(core, conf) {
   };
   var listUserID = function(text) {
     var mo = text.match(userEntryExpr);
-    if (res === null) {
+    if (mo === null) {
       return [];
     }
     return mo.map(getUserIDFromTokenizedEntry);
-  }
+  };
   var commands = {
     ping: function(req, res, next) {
       return res.send('pong');
     },
     send: function(req, res, next) {
-      resolveSlackUserID()
+      resolveSlackUserID();
       // TODO: implement
     },
     send_to_address: function(req, res, next) {
@@ -58,18 +58,17 @@ var _slack = function(core, conf) {
   };
   var _slack = function(req, res, next) {
     if (req.body.command !== '/zenos') {
-      return res.json(genErrorResponsePayload('unknwon command'))
+      return res.json(genErrorResponsePayload('unknwon command'));
     }
     if (req.body.team_id !== teamID) {
-      return res.json(genErrorResponsePayload('invalid request'))
+      return res.json(genErrorResponsePayload('invalid request'));
     }
     if (req.body.token !== token) {
-      return res.json(genErrorResponsePayload('invalid request'))
+      return res.json(genErrorResponsePayload('invalid request'));
     }
-
     console.log(req.body);
     return res.send('OK');
-  }
+  };
 
   return _slack;
 };

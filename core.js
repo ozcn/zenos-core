@@ -1,5 +1,4 @@
 
-
 var _core = function(conf) {
   var core = {};
 
