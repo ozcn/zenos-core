@@ -14,6 +14,48 @@ var _slack = function(core, conf) {
       ]
     }
   };
+  var userEntryExpr = new RegExp('<@(U[0-9A-Z]+)\\|([a-z]+)>', 'g');
+  var getUserIDFromTokenizedEntry = function(entry) {
+    var res = userEntryExpr.exec(entry);
+    if (res === null) {
+      return res;
+    }
+    return res[1];
+  };
+  var listUserID = function(text) {
+    var mo = text.match(userEntryExpr);
+    if (res === null) {
+      return [];
+    }
+    return mo.map(getUserIDFromTokenizedEntry);
+  }
+  var commands = {
+    ping: function(req, res, next) {
+      return res.send('pong');
+    },
+    send: function(req, res, next) {
+      resolveSlackUserID()
+      // TODO: implement
+    },
+    send_to_address: function(req, res, next) {
+      // TODO: implement
+    },
+    create_wallet: function(req, res, next) {
+      // TODO: implement
+    },
+    wallets: function(req, res, next) {
+      // TODO: implement
+    },
+    current_amount: function(req, res, next) {
+      // TODO: implement
+    }
+  };
+  var parseCommand = function(text) {
+
+  };
+  var resolveSlackUserID = function(id, cb) {
+
+  };
   var _slack = function(req, res, next) {
     if (req.body.command !== '/zenos') {
       return res.json(genErrorResponsePayload('unknwon command'))
