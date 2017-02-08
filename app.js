@@ -1,11 +1,21 @@
 
 var express = require('express');
+var path = require('path');
+
+var bodyParser = require('body-parser');
 
 var app = express();
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
+var config = require('./config');
+
+var core = require('./core')(config);
+
+app.use(bodyParser.urlencoded({ extended: false }));
+
+if (!!config['enable_slack_command']) {
+  var slack = require('./plugins/slack')(core, config);
+  app.post('/slack', slack);
+}
 
 
 module.exports = app;
