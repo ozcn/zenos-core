@@ -9,14 +9,14 @@ var _core = function(conf) {
     apiKey: apiKey,
     network: 'mainnet',
     privateSeed: null
-  }
+  };
 
-  var colu = new Colu(settings)
+  var colu = new Colu(settings);
   colu.on('connect', function () {
-      // Your code here
-  })
 
-  colu.init()
+  });
+
+  colu.init();
   return core;
 };
 
