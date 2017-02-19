@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/ozcn/zenos-slack/issues"
   },
-  "homepage": "https://github.com/ozcn/zenos-slack#readme"
+  "homepage": "https://github.com/ozcn/zenos-slack#readme",
+  "dependencies": {
+    "colu": "^0.11.1"
+  }
 }
