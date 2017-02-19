@@ -3,6 +3,15 @@ var _slack = function(core, conf) {
 
   var token = conf['slack_token'];
   var teamID = conf['slack_teamid'];
+  var userEntryExpr = new RegExp('<@(U[0-9A-Z]+)\\|([a-z]+)>', 'g');
+
+  /**
+   * genErrorResponsePayload() returns an
+   * Object
+   *
+   * @param  msg
+   * @return  element
+   */
   var genErrorResponsePayload = function(msg) {
     return {
       text: msg,
@@ -14,7 +23,6 @@ var _slack = function(core, conf) {
       ]
     };
   };
-  var userEntryExpr = new RegExp('<@(U[0-9A-Z]+)\\|([a-z]+)>', 'g');
   var getUserIDFromTokenizedEntry = function(entry) {
     var res = userEntryExpr.exec(entry);
     if (res === null) {
