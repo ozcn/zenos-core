@@ -61,9 +61,33 @@ var _slack = function(core, conf) {
   var parseCommand = function(text) {
 
   };
-  var resolveSlackUserID = function(id, cb) {
 
+  var resolveSlackUserID = function(id, cb) {
+    // Slackユーザーが存在するかを確認
+    var slackUserRef = core.firebase.database().ref('slack_users/' + id);
+
+    return slackUserRef.on('value', function(snapshot) {
+      var slackUser = snapshot.val();
+
+      // ユーザーが存在しない場合に作成する
+      if (slackUser == null) {
+        core.colu.on('connect', function () {
+          var address = core.colu.hdwallet.getAddress();
+
+          // IDとアドレスをセット
+          slackUserRef.set({
+            "id": id,
+            "address": address
+          });
+        });
+
+        core.colu.init();
+      }
+
+      return slackUser;
+    });
   };
+
   var _slack = function(req, res, next) {
     if (req.body.command !== '/zenos') {
       return res.json(genErrorResponsePayload('unknwon command'));
