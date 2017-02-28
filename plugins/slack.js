@@ -62,30 +62,43 @@ var _slack = function(core, conf) {
 
   };
 
+  /**
+   * resolveSlackUserID resolves wallet address by slack user id.
+   * callback function is called cb(null, {id: id, address: address})
+   * when id successfully resolved, cb(error, null) otherwise.
+   *
+   * @param id
+   * @param cv
+   * @return  null
+   */
   var resolveSlackUserID = function(id, cb) {
-    // Slackユーザーが存在するかを確認
-    var slackUserRef = core.firebase.database().ref('slack_users/' + id);
+    try {
+      // Slackユーザーが存在するかを確認
+      var slackUserRef = core.firebase.database().ref('slack_users/' + id);
 
-    return slackUserRef.on('value', function(snapshot) {
-      var slackUser = snapshot.val();
+      return slackUserRef.on('value', function(snapshot) {
+        var slackUser = snapshot.val();
 
-      // ユーザーが存在しない場合に作成する
-      if (slackUser == null) {
-        core.colu.on('connect', function () {
-          var address = core.colu.hdwallet.getAddress();
+        // ユーザーが存在しない場合に作成する
+        if (slackUser == null) {
+          core.colu.on('connect', function () {
+            var address = core.colu.hdwallet.getAddress();
 
-          // IDとアドレスをセット
-          slackUserRef.set({
-            'id': id,
-            'address': address
+            // IDとアドレスをセット
+            slackUserRef.set({
+              'id': id,
+              'address': address
+            });
           });
-        });
 
-        core.colu.init();
-      }
+          core.colu.init();
+        }
 
-      return slackUser;
-    });
+        return slackUser;
+      });
+    } catch (e) {
+      return cb(e, null);
+    }
   };
 
   var _slack = function(req, res, next) {
