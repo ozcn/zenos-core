@@ -76,8 +76,8 @@ var _slack = function(core, conf) {
 
           // IDとアドレスをセット
           slackUserRef.set({
-            "id": id,
-            "address": address
+            'id': id,
+            'address': address
           });
         });
 
