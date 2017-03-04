@@ -25,12 +25,21 @@ var _core = function(conf) {
   core.firebase = firebase;
   core.colu = colu;
 
+  /**
+   * getFirebaseRefVal gets the reference `ref` of the object and its
+   * value `val`, then calls `cb(null, {ref: ref, val: val})`. When some error
+   * occurs, `cb(error, null) is called.
+   *
+   * @param route
+   * @param cb
+   * @return  null
+   */
   core.getFirebaseRefVal = function(route, cb) {
     try {
       var ref = firebase.database().ref(route);
       var ret = {ref: ref};
       return ref.on('value', function(ss) {
-        ret.val = ss.val()
+        ret.val = ss.val();
         return cb(null, ret);
       });
     } catch (e) {
@@ -38,6 +47,14 @@ var _core = function(conf) {
     }
   };
 
+  /**
+   * getColuWallet creates a new wallet and calls `cb(null, addr)`
+   * where `addr` is the address. When some error occurs, `cb(error, null)
+   * is called.
+   *
+   * @param cb
+   * @return  null
+   */
   core.getColuHDWallet = function(cb) {
     try {
       colu.on('connect', function() {
