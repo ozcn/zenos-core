@@ -68,33 +68,31 @@ var _slack = function(core, conf) {
    * when id successfully resolved, cb(error, null) otherwise.
    *
    * @param id
-   * @param cv
+   * @param cb
    * @return  null
    */
   var resolveSlackUserID = function(id, cb) {
     try {
       // Slackユーザーが存在するかを確認
-      var slackUserRef = core.firebase.database().ref('slack_users/' + id);
-
-      return slackUserRef.on('value', function(snapshot) {
-        var slackUser = snapshot.val();
-
-        // ユーザーが存在しない場合に作成する
-        if (slackUser == null) {
-          core.colu.on('connect', function () {
-            var address = core.colu.hdwallet.getAddress();
-
-            // IDとアドレスをセット
-            slackUserRef.set({
-              'id': id,
-              'address': address
-            });
-          });
-
-          core.colu.init();
+      core.getFirebaseRefVal('slack_users/' + id, function(err, rv) {
+        if (err !== null) {
+          // some error occures
+          return cb(err, null);
         }
-
-        return slackUser;
+        if (rv.val === null) {
+          return core.getColuHDWallet(function(err, addr) {
+            if (err !== null) {
+              return cb(err, null);
+            }
+            rv.ref.set({
+              id: id,
+              address: addr
+            });
+            return cb(null, rv.val); //// これでいいのか？？？
+          });
+        } else {
+          return cb(null, rv.val);
+        }
       });
     } catch (e) {
       return cb(e, null);

@@ -4,7 +4,6 @@ var Firebase = require('firebase');
 
 var _core = function(conf) {
   var core = {};
-  var colu_private_seed = conf['colu_private_seed'];
 
   var colu_settings = {
     apiKey: conf['api_key'],
@@ -21,8 +20,34 @@ var _core = function(conf) {
   };
 
   // 参照
-  core.firebase = Firebase.initializeApp(firebase_config);
-  core.colu = new Colu(colu_settings);
+  var firebase = Firebase.initializeApp(firebase_config);
+  var colu = new Colu(colu_settings);
+  core.firebase = firebase;
+  core.colu = colu;
+
+  core.getFirebaseRefVal = function(route, cb) {
+    try {
+      var ref = firebase.database().ref(route);
+      var ret = {ref: ref};
+      return ref.on('value', function(ss) {
+        ret.val = ss.val()
+        return cb(null, ret);
+      });
+    } catch (e) {
+      return cb(e, null);
+    }
+  };
+
+  core.getColuHDWallet = function(cb) {
+    try {
+      colu.on('connect', function() {
+        return cb(null, colu.hdwallet.getAddress());
+      });
+      colu.init();
+    } catch (e) {
+      return cb(e, null);
+    }
+  };
 
   return core;
 };
