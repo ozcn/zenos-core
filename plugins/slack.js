@@ -61,9 +61,44 @@ var _slack = function(core, conf) {
   var parseCommand = function(text) {
 
   };
-  var resolveSlackUserID = function(id, cb) {
 
+  /**
+   * resolveSlackUserID resolves wallet address by slack user id.
+   * callback function is called cb(null, {id: id, address: address})
+   * when id successfully resolved, cb(error, null) otherwise.
+   *
+   * @param id
+   * @param cb
+   * @return  null
+   */
+  var resolveSlackUserID = function(id, cb) {
+    try {
+      // Slackユーザーが存在するかを確認
+      core.getFirebaseRefVal('slack_users/' + id, function(err, rv) {
+        if (err !== null) {
+          // some error occures
+          return cb(err, null);
+        }
+        if (rv.val === null) {
+          return core.getColuHDWallet(function(err, addr) {
+            if (err !== null) {
+              return cb(err, null);
+            }
+            rv.ref.set({
+              id: id,
+              address: addr
+            });
+            return cb(null, rv.val); //// これでいいのか？？？
+          });
+        } else {
+          return cb(null, rv.val);
+        }
+      });
+    } catch (e) {
+      return cb(e, null);
+    }
   };
+
   var _slack = function(req, res, next) {
     if (req.body.command !== '/zenos') {
       return res.json(genErrorResponsePayload('unknwon command'));
